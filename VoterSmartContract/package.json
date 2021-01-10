@@ -1,0 +1,25 @@
+{
+  "name": "VoterSmartContract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^2.5.0",
+    "dotenv": "^8.2.0",
+    "solc": "^0.8.0",
+    "truffle-hdwallet-provider": "^1.0.17"
+  },
+  "devDependencies": {
+    "ganache-cli": "^6.9.1",
+    "truffle": "^5.1.17"
+  },
+  "scripts": {
+    "local-blockchain": "ganache-cli -p 7545 -s plutx"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
