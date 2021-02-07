@@ -39,13 +39,12 @@ const start = async () => {
       'yeah'
     );
     const txObj = {
-      from: '0xbc5aC9e4bEe4aAE9F0D97F27d9e81B3eBDC8a39a',
+      from: process.env.ADMIN_ADDRESS,
       data: data,
-      to: '0xb81602bf4fab4d93ac531eb458cb58061e042380',
+      to: process.env.SC_ADDRESS,
       value: 1000000000000000
     };
-    const adminPrivateKey =
-      'e75593c07554c41cc48971a4454dcaf21da3616ad55c3d3e8747f8acd0715e19';
+    const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY;
     let tx = await createTx(txObj);
     let signedTx = await signTransaction(tx, adminPrivateKey);
     await web3.eth
