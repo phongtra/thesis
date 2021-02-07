@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^2.5.0",
+    "@truffle/hdwallet-provider": "^1.2.1",
     "dotenv": "^8.2.0",
     "solc": "^0.8.0",
     "truffle-hdwallet-provider": "^1.0.17"
