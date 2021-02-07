@@ -3,6 +3,7 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 
 contract Voter is Ownable {
     mapping(string => address) voters;
+    event RegisterVoter(address voter, string socialNumber);
 
     function _minting(address _voter) private {
         address payable voter = address(uint160(_voter));
@@ -16,6 +17,7 @@ contract Voter is Ownable {
     {
         voters[_socialNumber] = _voter;
         _minting(_voter);
+        emit RegisterVoter(_voter, _socialNumber);
     }
 
     function kill() public onlyOwner {
