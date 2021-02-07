@@ -1,4 +1,4 @@
-import { TxObj } from 'src/types/TxObj';
+import { TxObj } from '../types/TxObj';
 import { web3Instance } from './web3Instance';
 import * as EthereumTx from 'ethereumjs-tx';
 

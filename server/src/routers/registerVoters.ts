@@ -1,8 +1,8 @@
 import { Request, Response, Express } from 'express';
-import { TxObj } from 'src/types/TxObj';
-import { createTransaction } from 'src/utils/createTransaction';
-import { signTransaction } from 'src/utils/signTransaction';
-import { web3Instance } from 'src/utils/web3Instance';
+import { TxObj } from '../types/TxObj';
+import { createTransaction } from '../utils/createTransaction';
+import { signTransaction } from '../utils/signTransaction';
+import { web3Instance } from '../utils/web3Instance';
 const { web3, voterContract } = web3Instance();
 export const registerVoter = (app: Express) => {
   app.post('/register-voter', async (req: Request, res: Response) => {
