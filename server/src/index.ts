@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
-
+import bodyParser from 'body-parser';
+import cors from 'cors';
 import { web3Instance } from './utils/web3Instance';
 import { TxObj } from './types/TxObj';
 import { createTransaction } from './utils/createTransaction';
@@ -9,10 +10,13 @@ const app = express();
 const { web3, voterContract } = web3Instance();
 
 const start = async () => {
-  app.get('/', async (_req: Request, res: Response) => {
+  app.use(bodyParser.json());
+  app.use(cors());
+  app.post('/register-voter', async (req: Request, res: Response) => {
+    const { voterAddress, socialNumber } = req.body;
     const data = await voterContract.methods.registerVoter(
-      '0xea1b00396ba2291a6b3e73d9961bf0c9389f69cb',
-      'yeah'
+      voterAddress,
+      socialNumber
     );
     const txObj: TxObj = {
       from: process.env.ADMIN_ADDRESS,
@@ -29,7 +33,7 @@ const start = async () => {
         res.json({ transactionHash: txHash });
       })
       .on('error', async (err) => {
-        res.json({ error: "something wen't wrong" });
+        res.json({ error: 'something went wrong' });
       });
   });
   app.listen(5000);
