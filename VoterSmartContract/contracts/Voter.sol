@@ -15,6 +15,10 @@ contract Voter is Ownable {
         payable
         onlyOwner
     {
+        require(
+            voters[_socialNumber] == address(0x000),
+            "The voter is already registered"
+        );
         voters[_socialNumber] = _voter;
         _minting(_voter);
         emit RegisterVoter(_voter, _socialNumber);
