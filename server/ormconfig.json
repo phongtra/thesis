@@ -1,0 +1,8 @@
+{
+    "type": "postgres",
+    "url": "postgresql://postgres:2606@localhost:5432/thesis-project",
+    "logging": true,
+    "synchronize": false,
+    "migrations": ["dist/migrations/*.js"],
+    "entities": ["dist/entities/*.js"]
+}

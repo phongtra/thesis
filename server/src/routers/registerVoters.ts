@@ -1,4 +1,6 @@
 import { Request, Response, Express } from 'express';
+import crypto from 'crypto';
+import { Voter } from '../entities/Voter';
 import { TxObj } from '../types/TxObj';
 import { createTransaction } from '../utils/createTransaction';
 import { signTransaction } from '../utils/signTransaction';
@@ -6,15 +8,27 @@ import { web3Instance } from '../utils/web3Instance';
 const { web3, voterContract } = web3Instance();
 export const registerVoter = (app: Express) => {
   app.post('/register-voter', async (req: Request, res: Response) => {
-    const { voterAddress, socialNumber } = req.body;
+    const { socialNumber } = req.body;
+    const account = web3.eth.accounts.create();
+    const cipher = crypto.createCipher(
+      'aes-128-cbc',
+      process.env.ENCRYPTED_KEY
+    );
+    let ciphertext = cipher.update(account.privateKey, 'utf8', 'base64');
+    ciphertext += cipher.final('base64');
+    await Voter.create({
+      socialNumber,
+      address: account.address,
+      privateKey: ciphertext
+    }).save();
     const data = await voterContract.methods.registerVoter(
-      voterAddress,
+      account.address,
       socialNumber
     );
     const txObj: TxObj = {
       from: process.env.ADMIN_ADDRESS,
       data: data,
-      to: process.env.SC_ADDRESS,
+      to: process.env.VOTER_SC_ADDRESS,
       value: 1000000000000000
     };
     const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY;

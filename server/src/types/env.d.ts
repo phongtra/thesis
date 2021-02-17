@@ -5,5 +5,7 @@ declare namespace NodeJS {
     US_ELECTION_VOTE_SC_ADDRESS: string;
     ADMIN_PRIVATE_KEY: string;
     ADMIN_ADDRESS: string;
+    DB_URL: string;
+    ENCRYPTED_KEY: string;
   }
 }
