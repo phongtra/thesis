@@ -1,5 +1,5 @@
 import { Request, Response, Express } from 'express';
-import { Voter } from 'src/entities/Voter';
+import { Voter } from '../entities/Voter';
 import { TxObj } from '../types/TxObj';
 import { createTransaction } from '../utils/createTransaction';
 import { signTransaction } from '../utils/signTransaction';
@@ -32,15 +32,22 @@ export const usElectionVote = (app: Express) => {
       );
       let privateKey = decipher.update(encryptedPrivateKey, 'base64', 'utf8');
       privateKey += decipher.final('utf8');
+      console.log('private key: ', privateKey);
       let tx = await createTransaction(txObj);
       let signedTx = await signTransaction(tx, privateKey);
       await web3.eth
         .sendSignedTransaction(signedTx)
         .on('transactionHash', (txHash) => {
-          res.json({ transactionHash: txHash });
+          console.log(txHash);
         })
-        .on('error', async (err) => {
-          res.json({ error: 'something went wrong' });
+        .on('confirmation', async (confirmationNumber, receipt) => {
+          if (!receipt.status) {
+            return res.status(400).send({ error: 'You have already voted' });
+          }
+          return res.send({ receipt, confirmationNumber });
+        })
+        .on('error', async (error) => {
+          console.error(error.stack);
         });
     }
   });

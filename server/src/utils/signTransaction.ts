@@ -7,7 +7,10 @@ export const signTransaction = async (txObj: TxObj, privateKey: string) => {
   try {
     const chain = await web3.eth.net.getId();
     const tx = new EthereumTx.Transaction(txObj, { chain: chain });
-    const key = Buffer.from(privateKey, 'hex');
+    const key = Buffer.from(
+      privateKey.length === 64 ? privateKey : privateKey.substring(2, 66),
+      'hex'
+    );
     tx.sign(key);
     return '0x' + tx.serialize().toString('hex');
   } catch (e) {

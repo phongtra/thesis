@@ -1,12 +1,13 @@
 import 'reflect-metadata';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { Response, Request, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { registerVoter } from './routers/registerVoters';
 import { createConnection } from 'typeorm';
 import path from 'path';
 import { Voter } from './entities/Voter';
+import { usElectionVote } from './routers/usElectionVote';
 
 dotenv.config();
 
@@ -25,6 +26,11 @@ const start = async () => {
   app.use(bodyParser.json());
   app.use(cors());
   registerVoter(app);
+  usElectionVote(app);
+  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+    console.error(err.stack);
+    res.status(500).send(err.message);
+  });
   app.listen(5000);
 };
 

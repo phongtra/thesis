@@ -1,6 +1,8 @@
 import Web3 from 'web3';
 import Voter from '../abis/Voter.json';
 import UsElectionVoteContract from '../abis/UsElectionVote.json';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const web3Instance = () => {
   const web3 = new Web3(

@@ -9,18 +9,15 @@ const { web3, voterContract } = web3Instance();
 export const registerVoter = (app: Express) => {
   app.post('/register-voter', async (req: Request, res: Response) => {
     const { socialNumber } = req.body;
+    const existingSocialNumber = await Voter.findOne({ socialNumber });
+    if (existingSocialNumber) {
+      return res
+        .status(400)
+        .send({ error: 'The social number is already registered' });
+    }
     const account = web3.eth.accounts.create();
-    const cipher = crypto.createCipher(
-      'aes-128-cbc',
-      process.env.ENCRYPTED_KEY
-    );
-    let ciphertext = cipher.update(account.privateKey, 'utf8', 'base64');
-    ciphertext += cipher.final('base64');
-    await Voter.create({
-      socialNumber,
-      address: account.address,
-      privateKey: ciphertext
-    }).save();
+    console.log('address: ', account.address);
+    console.log('privateKey: ', account.privateKey);
     const data = await voterContract.methods.registerVoter(
       account.address,
       socialNumber
@@ -34,13 +31,30 @@ export const registerVoter = (app: Express) => {
     const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY;
     let tx = await createTransaction(txObj);
     let signedTx = await signTransaction(tx, adminPrivateKey);
-    await web3.eth
+    return await web3.eth
       .sendSignedTransaction(signedTx)
       .on('transactionHash', (txHash) => {
-        res.json({ transactionHash: txHash });
+        console.log(txHash);
       })
-      .on('error', async (err) => {
-        res.json({ error: 'something went wrong' });
+      .on('confirmation', async (confirmationNumber, receipt) => {
+        if (!receipt.status) {
+          return res.status(400).send({ error: 'Transaction failed' });
+        }
+        const cipher = crypto.createCipher(
+          'aes-128-cbc',
+          process.env.ENCRYPTED_KEY
+        );
+        let ciphertext = cipher.update(account.privateKey, 'utf8', 'base64');
+        ciphertext += cipher.final('base64');
+        await Voter.create({
+          socialNumber,
+          address: account.address,
+          privateKey: ciphertext
+        }).save();
+        return res.send({ receipt, confirmationNumber });
+      })
+      .on('error', async (error) => {
+        console.error(error.stack);
       });
   });
 };
