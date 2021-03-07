@@ -55,4 +55,13 @@ export const usElectionVote = (app: Express) => {
         });
     }
   });
+  app.get('/vote-result', async (_req, res: Response) => {
+    const joeBidenVote = await usElectionVoteContract.methods
+      .getVote('Joe Biden')
+      .call();
+    const donaldTrumpVote = await usElectionVoteContract.methods
+      .getVote('Donald Trump')
+      .call();
+    res.send({ joeBidenVote, donaldTrumpVote });
+  });
 };
