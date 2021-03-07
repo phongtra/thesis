@@ -51,7 +51,11 @@ export const registerVoter = (app: Express) => {
           address: account.address,
           privateKey: ciphertext
         }).save();
-        return res.send({ receipt, confirmationNumber });
+        return res.send({
+          confirmationNumber,
+          status: receipt.status,
+          message: 'Account has been registered'
+        });
       })
       .on('error', async (error) => {
         console.error(error.stack);

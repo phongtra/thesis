@@ -44,7 +44,11 @@ export const usElectionVote = (app: Express) => {
           if (!receipt.status) {
             return res.status(400).send({ error: 'You have already voted' });
           }
-          return res.send({ receipt, confirmationNumber });
+          return res.send({
+            confirmationNumber,
+            status: receipt.status,
+            message: `You have voted for ${candidate}`
+          });
         })
         .on('error', async (error) => {
           console.error(error.stack);
