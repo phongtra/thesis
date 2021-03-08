@@ -8,6 +8,7 @@ import { web3Instance } from '../utils/web3Instance';
 const { web3, voterContract } = web3Instance();
 export const registerVoter = (app: Express) => {
   app.post('/register-voter', async (req: Request, res: Response) => {
+    let confirmNum = 0;
     const { socialNumber } = req.body;
     const existingSocialNumber = await Voter.findOne({ socialNumber });
     if (existingSocialNumber) {
@@ -37,25 +38,34 @@ export const registerVoter = (app: Express) => {
         console.log(txHash);
       })
       .on('confirmation', async (confirmationNumber, receipt) => {
-        if (!receipt.status) {
-          return res.status(400).send({ error: 'Transaction failed' });
+        confirmNum++;
+        if (confirmNum === 2) {
+          if (!receipt.status) {
+            res.status(400).send({ error: 'Transaction failed' });
+          } else {
+            const cipher = crypto.createCipher(
+              'aes-128-cbc',
+              process.env.ENCRYPTED_KEY
+            );
+            let ciphertext = cipher.update(
+              account.privateKey,
+              'utf8',
+              'base64'
+            );
+            ciphertext += cipher.final('base64');
+            await Voter.create({
+              socialNumber,
+              address: account.address,
+              privateKey: ciphertext
+            }).save();
+            console.log('Send Request');
+            res.send({
+              confirmationNumber,
+              status: receipt.status,
+              message: 'Account has been registered'
+            });
+          }
         }
-        const cipher = crypto.createCipher(
-          'aes-128-cbc',
-          process.env.ENCRYPTED_KEY
-        );
-        let ciphertext = cipher.update(account.privateKey, 'utf8', 'base64');
-        ciphertext += cipher.final('base64');
-        await Voter.create({
-          socialNumber,
-          address: account.address,
-          privateKey: ciphertext
-        }).save();
-        return res.send({
-          confirmationNumber,
-          status: receipt.status,
-          message: 'Account has been registered'
-        });
       })
       .on('error', async (error) => {
         console.error(error.stack);

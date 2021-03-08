@@ -1,4 +1,4 @@
 export interface IResult {
-  joeBidenVote: number;
-  donaldTrumpVote: number;
+  joeBidenVote: number | null;
+  donaldTrumpVote: number | null;
 }

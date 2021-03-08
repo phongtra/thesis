@@ -4,10 +4,12 @@ import { SocialNumberForm } from './components/SocialNumberForm';
 import { VoteForm } from './components/VoteForm';
 import { IResult } from './types';
 import { Result } from './components/Result';
+import { Container, Heading } from '@chakra-ui/layout';
+import { Layout } from './components/Layout';
 
 const App: React.FC = () => {
-  const [donaldTrumpVote, setDonaldTrumptVote] = useState<number>(0);
-  const [joeBidenVote, setJoeBidenVote] = useState<number>(0);
+  const [donaldTrumpVote, setDonaldTrumptVote] = useState<number | null>(null);
+  const [joeBidenVote, setJoeBidenVote] = useState<number | null>(null);
   useEffect(() => {
     axios
       .get<IResult>('http://localhost:5000/vote-result')
@@ -17,12 +19,11 @@ const App: React.FC = () => {
       });
   }, []);
   return (
-    <div>
-      <h1>Welcome to blockchain voting system</h1>
-      <SocialNumberForm />
+    <Layout>
+      <Heading as='h4'>Welcome to blockchain voting system</Heading>
       <VoteForm />
       <Result joeBidenVote={joeBidenVote} donaldTrumpVote={donaldTrumpVote} />
-    </div>
+    </Layout>
   );
 };
 

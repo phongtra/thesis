@@ -5,8 +5,8 @@ const Result: React.FC<IResult> = ({ joeBidenVote, donaldTrumpVote }) => {
   return (
     <>
       <h2>Result</h2>
-      <p>Joe Biden: {joeBidenVote}</p>
-      <p>Donald Trump: {donaldTrumpVote}</p>
+      <p>Joe Biden: {joeBidenVote || 'Loading'}</p>
+      <p>Donald Trump: {donaldTrumpVote || 'Loading'}</p>
     </>
   );
 };

@@ -9,6 +9,7 @@ import crypto from 'crypto';
 const { web3, usElectionVoteContract } = web3Instance();
 export const usElectionVote = (app: Express) => {
   app.post('/us-election-vote', async (req: Request, res: Response) => {
+    let confirmNum = 0;
     const { candidate, socialNumber } = req.body;
     const voter = await Voter.findOne({ socialNumber });
     if (!voter || !voter.address) {
@@ -41,14 +42,18 @@ export const usElectionVote = (app: Express) => {
           console.log(txHash);
         })
         .on('confirmation', async (confirmationNumber, receipt) => {
-          if (!receipt.status) {
-            return res.status(400).send({ error: 'You have already voted' });
+          confirmNum++;
+          if (confirmNum === 2) {
+            if (!receipt.status) {
+              res.status(400).send({ error: 'You have already voted' });
+            } else {
+              res.send({
+                confirmationNumber,
+                status: receipt.status,
+                message: `You have voted for ${candidate}`
+              });
+            }
           }
-          return res.send({
-            confirmationNumber,
-            status: receipt.status,
-            message: `You have voted for ${candidate}`
-          });
         })
         .on('error', async (error) => {
           console.error(error.stack);

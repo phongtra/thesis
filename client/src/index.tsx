@@ -1,11 +1,22 @@
 import React from 'react';
+import 'react-toastify/dist/ReactToastify.css';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import reportWebVitals from './reportWebVitals';
-
+const colors = {
+  brand: {
+    900: '#1a365d',
+    800: '#153e75',
+    700: '#2a69ac'
+  }
+};
+const theme = extendTheme({ colors });
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ChakraProvider theme={theme}>
+      <App />
+    </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
