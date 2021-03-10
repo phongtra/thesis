@@ -20,7 +20,6 @@ const App: React.FC = () => {
   }, []);
   return (
     <Layout>
-      <Heading as='h4'>Welcome to blockchain voting system</Heading>
       <VoteForm />
       <Result joeBidenVote={joeBidenVote} donaldTrumpVote={donaldTrumpVote} />
     </Layout>

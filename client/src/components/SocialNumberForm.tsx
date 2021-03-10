@@ -1,11 +1,10 @@
 import React, { SyntheticEvent, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+
 import axios from 'axios';
 import {
   Button,
   FormControl,
   FormLabel,
-  Heading,
   Input,
   Modal,
   ModalBody,
@@ -14,6 +13,9 @@ import {
   ModalHeader,
   ModalOverlay
 } from '@chakra-ui/react';
+import { toastSuccess } from '../utils/toastSuccess';
+import { toastError } from '../utils/toastError';
+import { Toast } from './common/Toast';
 
 interface ModalProps {
   isOpen: boolean;
@@ -31,26 +33,10 @@ const SocialNumberForm: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       await axios.post('http://localhost:5000/register-voter', {
         socialNumber
       });
-      toast.success(`${socialNumber} has been registered`, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined
-      });
+      toastSuccess(`${socialNumber} has been registered`);
     } catch (e) {
       console.log(e.response.data.error);
-      toast.error(e.response.data.error, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined
-      });
+      toastError(e.response.data.error);
     }
     setSocialNumber('');
     setLoading(false);
@@ -81,18 +67,7 @@ const SocialNumberForm: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-
-      <ToastContainer
-        position='top-right'
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover={false}
-      />
+      <Toast />
     </>
   );
 };
