@@ -1,20 +1,35 @@
 import { Button } from '@chakra-ui/button';
+import axios from 'axios';
 import { FormControl, FormLabel } from '@chakra-ui/form-control';
 import { Input } from '@chakra-ui/input';
 import { Heading } from '@chakra-ui/layout';
 import { Select } from '@chakra-ui/select';
 import React, { SyntheticEvent, useState } from 'react';
+import { toastSuccess } from '../utils/toastSuccess';
+import { toastError } from '../utils/toastError';
 
 const VoteForm: React.FC = () => {
   const [socialNumber, setSocialNumber] = useState('');
   const [candidate, setCandidate] = useState('');
-  const onSubmit = (e: SyntheticEvent) => {
+  const [loading, setLoading] = useState(false);
+  const onSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (!candidate) {
       console.log('Must select a candidate');
     }
-    console.log(socialNumber);
-    console.log(candidate);
+    try {
+      setLoading(true);
+      await axios.post('http://localhost:5000/us-election-vote', {
+        socialNumber,
+        candidate
+      });
+      toastSuccess(`${socialNumber} has voted for ${candidate}`);
+    } catch (e) {
+      console.log(e.response.data.error);
+      toastError(e.response.data.error);
+    }
+    setSocialNumber('');
+    setLoading(false);
   };
   return (
     <>
@@ -38,7 +53,7 @@ const VoteForm: React.FC = () => {
             <option value='Joe Biden'>Joe Biden</option>
             <option value='Donald Trump'>Donald Trumpt</option>
           </Select>
-          <Button mt={4} mb={4}>
+          <Button isLoading={loading} mt={4} mb={4}>
             Vote
           </Button>
         </FormControl>
