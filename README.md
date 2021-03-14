@@ -15,10 +15,14 @@ This project consists of:
 
 Navigate to the server folder and run
 
+`yarn`
+
 `yarn build`
+
 `yarn start`
 
 After that, navigate to the client folder and run
+`yarn`
 
 `yarn start`
 
