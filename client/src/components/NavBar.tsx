@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Link,
-  Flex,
-  Button,
-  Heading,
-  useDisclosure
-} from '@chakra-ui/react';
+import { Box, Flex, Button, Heading, useDisclosure } from '@chakra-ui/react';
 import { SocialNumberForm } from './SocialNumberForm';
 
 export const NavBar: React.FC = () => {

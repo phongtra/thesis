@@ -8,7 +8,12 @@ import React, { SyntheticEvent, useState } from 'react';
 import { toastSuccess } from '../utils/toastSuccess';
 import { toastError } from '../utils/toastError';
 
-const VoteForm: React.FC = () => {
+interface IProps {
+  setVoted: (voted: boolean) => void;
+  voted: boolean;
+}
+
+const VoteForm: React.FC<IProps> = ({ setVoted, voted }) => {
   const [socialNumber, setSocialNumber] = useState('');
   const [candidate, setCandidate] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,6 +29,7 @@ const VoteForm: React.FC = () => {
         candidate
       });
       toastSuccess(`${socialNumber} has voted for ${candidate}`);
+      setVoted(!voted);
     } catch (e) {
       console.log(e.response.data.error);
       toastError(e.response.data.error);
@@ -43,20 +49,27 @@ const VoteForm: React.FC = () => {
             value={socialNumber}
             onChange={(e) => setSocialNumber(e.target.value)}
           />
+        </FormControl>
+        <FormControl>
           <FormLabel mt={4}>Choose one</FormLabel>
           <Select
             defaultValue=''
-            value={candidate}
             onChange={(e) => setCandidate(e.target.value)}
           >
             <option value=''></option>
             <option value='Joe Biden'>Joe Biden</option>
             <option value='Donald Trump'>Donald Trumpt</option>
           </Select>
-          <Button isLoading={loading} mt={4} mb={4}>
-            Vote
-          </Button>
         </FormControl>
+        <Button
+          colorScheme='yellow'
+          type='submit'
+          isLoading={loading}
+          mt={4}
+          mb={4}
+        >
+          Vote
+        </Button>
       </form>
     </>
   );
