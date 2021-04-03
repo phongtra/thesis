@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import dotenv from 'dotenv';
 import express, { Response, Request, NextFunction } from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import { registerVoter } from './routers/registerVoters';
 import { createConnection } from 'typeorm';
@@ -23,7 +22,7 @@ const start = async () => {
     entities: [Voter]
   });
   await connection.runMigrations();
-  app.use(bodyParser.json());
+  app.use(express.json());
   app.use(cors());
   registerVoter(app);
   usElectionVote(app);
