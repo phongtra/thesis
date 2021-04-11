@@ -17,11 +17,12 @@ Navigate to the server folder and run
 
 `yarn`
 
-`yarn build`
+`yarn dev:build`
 
-`yarn start`
+In `.env`, change the DB_URL to your own PostgreSQL connection URL.
 
 After that, navigate to the client folder and run
+
 `yarn`
 
 `yarn start`

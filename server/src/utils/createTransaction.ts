@@ -8,7 +8,6 @@ export const createTransaction = async (txObj: TxObj) => {
 
   if (!txObj.gasPrice) txObj.gasPrice = await web3.eth.getGasPrice();
 
-  // TODO Tạm thời set cứng gasLimit
   txObj.gasLimit = web3.utils.numberToHex(300000);
   txObj.gasPrice = txObj.gasPrice
     ? web3.utils.numberToHex(txObj.gasPrice)
